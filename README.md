@@ -1,65 +1,65 @@
 
 # 🛡️ DNS Cache Poisoning Simulation  
-### *Simulazione di attacco DNS Cache Poisoning e delle relative contromisure*
+### *Academic Simulation of DNS Cache Poisoning Attacks and Security Countermeasures*
 
-Questo progetto dimostra, in un ambiente completamente controllato tramite Docker, le vulnerabilità del protocollo DNS e l’efficacia di diverse tecniche di mitigazione contro attacchi di tipo **Kaminsky** e **DNS Spoofing**.
+This project demonstrates, inside a fully controlled Docker environment, the vulnerabilities of the DNS protocol and the effectiveness of modern mitigation techniques against **Kaminsky-style** and **DNS Spoofing** attacks.
 
-Il cuore dell’infrastruttura è un **DNS Resolver custom** sviluppato in Python, in grado di abilitare o disabilitare manualmente le difese per osservare con precisione il successo o il fallimento di un attacco.
+A custom **Python DNS Resolver** allows enabling or disabling specific protections to observe how the attack succeeds or fails under different security configurations.
 
 ---
 
-## 📋 Indice
-- [Architettura del Sistema](#-architettura-del-sistema)  
-- [Tecnologie Utilizzate](#-tecnologie-utilizzate)  
-- [Installazione e Avvio](#-installazione-e-avvio)  
-- [Simulazione dell'Attacco](#️-simulazione-dellattacco)  
-- [Misure di Sicurezza Implementate](#-misure-di-sicurezza-implementate)  
-- [Analisi del Traffico](#-analisi-del-traffico)  
-- [Screenshot della Vittima](#-screenshot-della-vittima)  
+## 📋 Table of Contents
+- [System Architecture](#-system-architecture)  
+- [Technologies Used](#-technologies-used)  
+- [Installation & Startup](#-installation--startup)  
+- [Attack Simulation](#️-attack-simulation)  
+- [Implemented Security Measures](#-implemented-security-measures)  
+- [Traffic Analysis](#-traffic-analysis)  
+- [Victim Screenshot](#-victim-screenshot)  
 - [Disclaimer](#-disclaimer)
 
 ---
 
-## 🏗 Architettura del Sistema
+## 🏗 System Architecture
 
-Il progetto utilizza **Docker Compose** per creare un ambiente virtualizzato e totalmente isolato nella rete privata `172.20.0.0/24`, così da evitare la fuoriuscita di traffico malevolo.
+The entire environment runs inside **Docker Compose**, isolated in the private subnet `172.20.0.0/24` to prevent any malicious traffic from leaving the lab environment.
 
-| Componente | Ruolo | IP | Descrizione |
-|-----------|-------|----|-------------|
-| **DNS Resolver** | Target | `172.20.0.2` | Server DNS custom (Python/Gevent), vittima dell’attacco |
-| **Attacker** | Attaccante | `172.20.0.3` | Container Kali Linux con script Python/Scapy |
-| **Auth Server** | Autorità | `172.20.0.4` | Autorevole per il dominio target |
-| **Client/User** | Vittima | `172.20.0.5` | Client che effettua la query legittima |
-
----
-
-## 🛠 Tecnologie Utilizzate
-
-- **Python 3.9+** – per server DNS e script di attacco  
-- **Docker & Docker Compose** – orchestrazione dell'infrastruttura  
-- **Scapy** – creazione e iniezione di pacchetti DNS spoofati  
-- **dnslib** – parsing e generazione di record DNS  
-- **Gevent** – concorrenza ad alte prestazioni  
-- **Tcpdump / Wireshark** – analisi pacchetti `.pcap`  
+| Component      | Role       | IP            | Description |
+|----------------|-----------|--------------|-------------|
+| **DNS Resolver** | Target     | `172.20.0.2` | Custom Python DNS server, victim of the poisoning attack |
+| **Attacker**     | Attacker   | `172.20.0.3` | Kali Linux container running Python/Scapy flooding scripts |
+| **Auth Server**  | Authority  | `172.20.0.4` | Authoritative DNS server for the target zone |
+| **Client/User**  | Victim     | `172.20.0.5` | Legitimate DNS client sending normal queries |
 
 ---
 
-## 🚀 Installazione e Avvio
+## 🛠 Technologies Used
 
-Clona la repository:
+- **Python 3.9+** — custom DNS resolver & attack scripts  
+- **Docker / Docker Compose** — infrastructure orchestration  
+- **Scapy** — spoofed DNS packet generation  
+- **dnslib** — DNS record parsing & construction  
+- **Gevent** — high‑performance concurrency  
+- **Tcpdump / Wireshark** — detailed traffic inspection  
+
+---
+
+## 🚀 Installation & Startup
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/Zartep/DNS_cache_poisoning_attack_simulation.git
 cd DNS_cache_poisoning_attack_simulation
 ```
 
-Avvia l’infrastruttura:
+Start the environment:
 
 ```bash
 docker-compose up --build -d
 ```
 
-Verifica lo stato dei container:
+Verify running containers:
 
 ```bash
 docker-compose ps
@@ -67,85 +67,85 @@ docker-compose ps
 
 ---
 
-## ⚔️ Simulazione dell'Attacco
+## ⚔️ Attack Simulation
 
-L’attacco sfrutta una **race condition**: l’attaccante inonda il resolver con risposte spoofate mentre questo aspetta quella reale dal server autoritativo.
+This project simulates a **race‑condition attack**, where the attacker floods the DNS resolver with spoofed responses while the resolver is still waiting for the legitimate answer from the authoritative server.
 
-Accedi al container dell’attaccante:
+Enter the attacker container:
 
 ```bash
 docker exec -it attacker_machine bash
 ```
 
-Esegui lo script:
+Run the attack script:
 
 ```bash
-python3 exploit.py --target 172.20.0.2 --domain esempio.com
+python3 exploit.py --target 172.20.0.2 --domain example.com
 ```
 
-Lo script effettua un flood di pacchetti DNS falsificati cercando di indovinare:
+The script performs a high‑speed flood attempting to guess:
 
-- **Transaction ID (TXID)**  
-- **Porta sorgente (Source Port)**  
-- **Case randomization 0x20 (se attiva)**  
+- **Transaction ID (TXID)**
+- **Source Port**
+- **0x20 Bit Case Randomization Pattern (if enabled)**
 
 ---
 
-## 🛡️ Misure di Sicurezza Implementate
+## 🛡 Implemented Security Measures
 
-Il server DNS custom replica manualmente le difese normalmente integrate nei server come BIND9, per scopi didattici.
+The custom resolver implements defenses that DNS servers like BIND9 already include, allowing step‑by‑step observation of their effectiveness.
 
 ### 1. 🔐 Source Port Randomization  
-La porta sorgente per le query in uscita viene scelta casualmente da un ampio range.  
-➡️ **Aumenta drasticamente l’entropia** e rende l'indovinamento della porta molto più difficile.
+Outbound DNS queries now use **random ephemeral ports**, drastically increasing entropy  
+→ Makes port prediction nearly impossible.
 
 ---
 
-### 2. 🔑 Randomizzazione del Transaction ID (TXID)  
-Generazione **crittograficamente sicura** del campo Transaction ID a 16 bit.  
-➡️ Riduce la probabilità di successo dell’attacco.
+### 2. 🔑 Secure Transaction ID Randomization  
+TXIDs are generated using a secure random 16‑bit generator  
+→ Makes TXID guessing far harder.
 
 ---
 
-### 3. 🔡 DNS 0x20 Bit Encoding (Mixed Case)  
-Implementazione del draft *“Use of Bit 0x20 in DNS Labels”*.  
+### 3. 🔡 DNS 0x20 Bit Encoding (Mixed‑Case Defense)  
+Implementation of the *“Use of Bit 0x20 in DNS Labels”* draft.
 
-Funzionamento:
-- Il resolver invia la query con casing casuale (es. `WwW.eSeMpIo.CoM`).
-- La risposta deve avere lo **stesso identico casing**.
+Mechanism:
+- Queries are sent with randomized uppercase/lowercase characters (e.g., `WwW.ExAmPlE.CoM`)
+- Responses must match the exact case pattern  
 
-➡️ L’attaccante deve indovinare *anche* il pattern di maiuscole/minuscole → attacco quasi impossibile.
+→ Attacker must guess ID + port + case pattern → **computationally infeasible**.
 
 ---
 
-## 🔍 Analisi del Traffico
+## 🔍 Traffic Analysis
 
-È possibile catturare il traffico DNS durante l’attacco:
+Capture DNS traffic from inside the resolver:
 
 ```bash
 docker exec -it dns_resolver tcpdump -i eth0 -w /data/capture.pcap udp port 53
 ```
 
-Il file `.pcap` può essere analizzato con **Wireshark** per verificare:
+Inspect the `.pcap` file with Wireshark to visualize:
 
-- Flood di pacchetti spoofati  
-- Risposta legittima del server autoritativo  
-- Presenza o meno di avvelenamento della cache  
+- Spoofed packet flood  
+- Legitimate authoritative server response  
+- Successful or failed cache poisoning attempt  
 
 ---
 
-## 📸 Screenshot della Vittima
+## 📸 Victim Screenshot
 
-Ecco cosa vede la vittima quando esegue `dig google.com` dopo l’avvenuto avvelenamento:
+Below is what the victim sees after a successful poisoning attack, when running `dig google.com`:
 
-![dig output](./Screenshot_2025-11-23_172606.png)
+![Victim DIG Output](./Screenshot_2025-11-23_172606.png)
 
 ---
 
 ## ⚠️ Disclaimer
 
-Questo software è sviluppato **esclusivamente per scopi accademici e di ricerca**.  
-L’uso degli script contro sistemi reali senza autorizzazione è **illegale**.  
-L’autore non si assume alcuna responsabilità per un eventuale uso improprio.
+This software is intended **strictly for academic and research purposes**.  
+Running DNS spoofing attacks against systems you do not own or control is **illegal**.  
+The author assumes **no responsibility** for misuse of the provided code.
 
 ---
