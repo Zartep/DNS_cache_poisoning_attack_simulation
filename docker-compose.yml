@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  dns:
+    build: ./dns
+    container_name: dns
+    networks:
+      test_net:
+        ipv4_address: 192.168.100.2
+    volumes:
+        - ./dns:/src
+    tty: true
+
+  client:
+    build: ./client
+    container_name: client
+    networks:
+      test_net:
+        ipv4_address: 192.168.100.3
+    tty: true
+
+  attacker:
+    build: ./attacker
+    container_name: attacker
+    volumes:
+        - ./attacker:/src
+    networks:
+      test_net:
+        ipv4_address: 192.168.100.4
+    tty: true
+
+  root_dns:
+    build: ./root_dns
+    container_name: root_dns
+    volumes:
+        - ./root_dns:/src
+    networks:
+      test_net:
+        ipv4_address: 192.168.100.5
+    tty: true
+
+networks:
+  test_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/28
