@@ -35,7 +35,7 @@ The entire environment runs inside **Docker Compose**, isolated in the private s
 
 ## 🛠 Technologies Used
 
-- **Python 3.9+** — custom DNS resolver & attack scripts  
+- **Python 3.7+** — custom DNS resolver & attack scripts  
 - **Docker / Docker Compose** — infrastructure orchestration  
 - **Scapy** — spoofed DNS packet generation  
 - **dnslib** — DNS record parsing & construction  
