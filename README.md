@@ -1,5 +1,5 @@
 
-# 🛡️ DNS Cache Poisoning Simulation  
+# DNS Cache Poisoning Simulation  
 ### *Academic Simulation of DNS Cache Poisoning Attacks and Security Countermeasures*
 
 This project demonstrates, inside a fully controlled Docker environment, the vulnerabilities of the DNS protocol and the effectiveness of modern mitigation techniques against **Kaminsky-style** and **DNS Spoofing** attacks.
@@ -8,7 +8,7 @@ A custom **Python DNS Resolver** allows enabling or disabling specific protectio
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 - [System Architecture](#-system-architecture)  
 - [Technologies Used](#-technologies-used)  
 - [Installation & Startup](#-installation--startup)  
@@ -20,7 +20,7 @@ A custom **Python DNS Resolver** allows enabling or disabling specific protectio
 
 ---
 
-## 🏗 System Architecture
+## System Architecture
 
 The entire environment runs inside **Docker Compose**, isolated in the private subnet `172.20.0.0/24` to prevent any malicious traffic from leaving the lab environment.
 
@@ -33,7 +33,7 @@ The entire environment runs inside **Docker Compose**, isolated in the private s
 
 ---
 
-## 🛠 Technologies Used
+## Technologies Used
 
 - **Python 3.7+** — custom DNS resolver & attack scripts  
 - **Docker / Docker Compose** — infrastructure orchestration  
@@ -44,7 +44,7 @@ The entire environment runs inside **Docker Compose**, isolated in the private s
 
 ---
 
-## 🚀 Installation & Startup
+## Installation & Startup
 
 Clone the repository:
 
@@ -61,7 +61,7 @@ docker-compose up
 ```
 ---
 
-## ⚔️ Attack Simulation
+## Attack Simulation
 
 This project simulates a **race‑condition attack**, where the attacker floods the DNS resolver with spoofed responses while the resolver is still waiting for the legitimate answer from the authoritative server.
 
@@ -79,17 +79,17 @@ python attack.py google.com 7.7.7.7
 
 ---
 
-## 🛡 Implemented Security Measures
+## Implemented Security Measures
 
 The custom resolver implements defenses that DNS servers, allowing step‑by‑step observation of their effectiveness.
 
-### 1. 🔐 Source Port Randomization  
+### 1. Source Port Randomization  
 Outbound DNS queries now use **random ephemeral ports**, drastically increasing entropy  
 → Makes port prediction nearly impossible.
 
 ---
 
-### 2. 🔡 DNS 0x20 Bit Encoding (Mixed‑Case Defense)  
+### 2. DNS 0x20 Bit Encoding (Mixed‑Case Defense)  
 Implementation of the *“Use of Bit 0x20 in DNS Labels”* draft.
 
 Mechanism:
@@ -100,7 +100,7 @@ Mechanism:
 
 ---
 
-## 🔍 Traffic Analysis
+## Traffic Analysis
 
 Capture DNS traffic from inside the resolver:
 
@@ -116,7 +116,7 @@ Inspect the `.pcap` file with Wireshark to visualize:
 
 ---
 
-## 📸 Victim Screenshot
+## Victim Screenshot
 
 Below is what the victim sees after a successful poisoning attack, when running `dig google.com`:
 
@@ -124,7 +124,7 @@ Below is what the victim sees after a successful poisoning attack, when running 
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 This software is intended **strictly for academic and research purposes**.  
 Running DNS spoofing attacks against systems you do not own or control is **illegal**.  
