@@ -74,7 +74,7 @@ This project simulates a **race‑condition attack**, where the attacker floods 
 Enter the attacker container:
 
 ```bash
-docker exec -it attacker_machine bash
+docker exec -it attacker bash
 ```
 
 Run the attack script:
