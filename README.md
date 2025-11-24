@@ -80,20 +80,14 @@ docker exec -it attacker_machine bash
 Run the attack script:
 
 ```bash
-python3 exploit.py --target 172.20.0.2 --domain example.com
+python attack.py google.com 7.7.7.7
 ```
-
-The script performs a high‑speed flood attempting to guess:
-
-- **Transaction ID (TXID)**
-- **Source Port**
-- **0x20 Bit Case Randomization Pattern (if enabled)**
 
 ---
 
 ## 🛡 Implemented Security Measures
 
-The custom resolver implements defenses that DNS servers like BIND9 already include, allowing step‑by‑step observation of their effectiveness.
+The custom resolver implements defenses that DNS servers, allowing step‑by‑step observation of their effectiveness.
 
 ### 1. 🔐 Source Port Randomization  
 Outbound DNS queries now use **random ephemeral ports**, drastically increasing entropy  
@@ -101,13 +95,7 @@ Outbound DNS queries now use **random ephemeral ports**, drastically increasing 
 
 ---
 
-### 2. 🔑 Secure Transaction ID Randomization  
-TXIDs are generated using a secure random 16‑bit generator  
-→ Makes TXID guessing far harder.
-
----
-
-### 3. 🔡 DNS 0x20 Bit Encoding (Mixed‑Case Defense)  
+### 2. 🔡 DNS 0x20 Bit Encoding (Mixed‑Case Defense)  
 Implementation of the *“Use of Bit 0x20 in DNS Labels”* draft.
 
 Mechanism:
