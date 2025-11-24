@@ -56,15 +56,9 @@ cd DNS_cache_poisoning_attack_simulation
 Start the environment:
 
 ```bash
-docker-compose up --build -d
+docker-compose build
+docker-compose up
 ```
-
-Verify running containers:
-
-```bash
-docker-compose ps
-```
-
 ---
 
 ## ⚔️ Attack Simulation
