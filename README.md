@@ -102,18 +102,12 @@ Mechanism:
 
 ## Traffic Analysis
 
-Capture DNS traffic from inside the resolver:
+You can analyze the traffic of each container using Netshoot (example with the dns container):
 
 ```bash
-docker exec -it dns_resolver tcpdump -i eth0 -w /data/capture.pcap udp port 53
+docker run -it --rm --net container:dns nicolaka/netshoot
+tcpdump -n
 ```
-
-Inspect the `.pcap` file with Wireshark to visualize:
-
-- Spoofed packet flood  
-- Legitimate authoritative server response  
-- Successful or failed cache poisoning attempt  
-
 ---
 
 ## Victim Screenshot
