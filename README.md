@@ -26,10 +26,10 @@ The entire environment runs inside **Docker Compose**, isolated in the private s
 
 | Component      | Role       | IP            | Description |
 |----------------|-----------|--------------|-------------|
-| **DNS Resolver** | Target     | `172.20.0.2` | Custom Python DNS server, victim of the poisoning attack |
-| **Attacker**     | Attacker   | `172.20.0.3` | Kali Linux container running Python/Scapy flooding scripts |
-| **Auth Server**  | Authority  | `172.20.0.4` | Authoritative DNS server for the target zone |
-| **Client/User**  | Victim     | `172.20.0.5` | Legitimate DNS client sending normal queries |
+| **DNS Resolver** | Target     | `192.168.100.2` | Custom Python DNS server, victim of the poisoning attack |
+| **Client/User**     | Attacker   | `192.168.100.3` | Kali Linux container running Python/Scapy flooding scripts |
+| **Attacker**  | Authority  | `192.168.100.4` | Authoritative DNS server for the target zone |
+| **Auth Server**  | Victim     | `192.168.100.5` | Legitimate DNS client sending normal queries |
 
 ---
 
